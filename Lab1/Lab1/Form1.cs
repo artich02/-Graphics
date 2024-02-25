@@ -1,14 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace Lab1
 {
     public partial class Form1 : Form
     {
-
         private Bitmap originalImage;
-        private Bitmap grayImage;
+        private bool imageProcessing = false;
+
+        private class ComboItem
+        {
+            public string Name { get; private set; }
+            public Action Action { get; private set; }
+            public (int, int)? Minmax { get; private set; }
+
+            public ComboItem(string name, Action action)
+            {
+                Action = action; Name = name; Minmax = null;
+            }
+
+            public ComboItem(string name, Action action, (int, int) minmax)
+            {
+                Action = action; Name = name; Minmax = minmax;
+            }
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -16,23 +35,20 @@ namespace Lab1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //LoadImageFromFolder("C:\\Users\tar88\\Pictures\\IMG_0095.JPG");
+            var items = new List<ComboItem>
+            {
+                new ComboItem("Серый",       () => ConvertToGrayScale()),
+                new ComboItem("Бинаризация", () => Binarize(), (0, 255)),
+                new ComboItem("Яркость",     () => AdjustBrightness(), (-255, 255)),
+                new ComboItem("Размытие (М)",() => Blur())
+            };
+
+            comboBox1.DisplayMember = "Name"; // will display Name property
+            comboBox1.ValueMember = "Action"; // will select Value property
+            comboBox1.DataSource = items;
         }
 
-        private void LoadImageFromFolder(string imagePath)
-        {
-            try
-            {
-                originalImage = new Bitmap(imagePath);
-                pictureBox1.Image = originalImage;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при загрузке изображения: {ex.Message}");
-            }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void LoadImageButton_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -43,17 +59,52 @@ namespace Lab1
                     originalImage = new Bitmap(imagePath);
                     pictureBox1.Image = originalImage;
                 }
-
             }
         }
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            if (pictureBox1.Image != null)
+            {
+                // Сохраняем исходное изображение
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "Images|*.png;*.bmp;*.jpg";
+                    if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        string imagePath = saveFileDialog.FileName;
+                        ImageFormat format = ImageFormat.Png;
+                        switch (imagePath)
+                        {
+                            case ".png":
+                                format = ImageFormat.Png;
+                                break;
+                            case ".jpg":
+                                format = ImageFormat.Jpeg;
+                                break;
+                            case ".bmp":
+                                format = ImageFormat.Bmp;
+                                break;
+                        }
+                        pictureBox1.Image.Save(saveFileDialog.FileName, format);
+                    }
+                }
+            }
+        }
+        private void RestoreButton_Click(object sender, EventArgs e)
+        {// Возвращаем исходное изображение
+            pictureBox1.Image = originalImage;
+        }
 
+        /// ////////////////////////////////////////////////////////////
+        /*
         private void GrayscaleButton_Click(object sender, EventArgs e)
         {
             // Конвертация в оттенки серого
-            grayImage = ConvertToGrayScale(originalImage);
+            Bitmap grayImage = ConvertToGrayScale(originalImage);
             pictureBox1.Image = grayImage;
         }
-
+        */
+        /*
         private void BinarizeButton_Click(object sender, EventArgs e)
         {
             if (pictureBox1.Image != null)
@@ -68,7 +119,8 @@ namespace Lab1
                 }
             }
         }
-
+        */
+        /*
         private void BrightnessButton_Click(object sender, EventArgs e)
         {
 
@@ -84,24 +136,10 @@ namespace Lab1
                 }
             }
         }
-
-        private void SaveButton_Click(object sender, EventArgs e)
-        {
-            if (pictureBox1.Image != null)
-            {
-                // Сохраняем исходное изображение
-                if (_originalImage == null)
-                {
-                    _originalImage = (Bitmap)pictureBox1.Image.Clone();
-                }
-
-                // Возвращаем исходное изображение
-                pictureBox1.Image = _originalImage;
-            }
-        }
+        */
 
         /// ////////////////////////////////////////////////////////////
-
+        /*
         private void button6_Click(object sender, EventArgs e)
         {
             if (pictureBox1.Image != null)
@@ -116,32 +154,35 @@ namespace Lab1
                 }
             }
 
-        }
+        }*/
         /// ////////////////////////////////////////////////////////////
 
-        private Bitmap _originalImage;
+        //private Bitmap _originalImage;
 
         // Функция для преобразования изображения в оттенки серого
-        private Bitmap ConvertToGrayScale(Bitmap inputImage)
+        private void ConvertToGrayScale()
         {
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
             Bitmap grayBitmap = new Bitmap(inputImage.Width, inputImage.Height);
-
             for (int y = 0; y < inputImage.Height; y++)
             {
                 for (int x = 0; x < inputImage.Width; x++)
                 {
                     Color originalColor = inputImage.GetPixel(x, y);
-                    byte grayValue = (byte)(0.3 * originalColor.R + 0.59 * originalColor.G + 0.11 * originalColor.B);
+                    byte grayValue = (byte)(0.2989f * originalColor.R
+                                          + 0.5870f * originalColor.G
+                                          + 0.1141f * originalColor.B);
                     grayBitmap.SetPixel(x, y, Color.FromArgb(grayValue, grayValue, grayValue));
                 }
             }
-
-            return grayBitmap;
+            pictureBox1.Image = grayBitmap;
         }
 
-        public static Bitmap Binarize(Bitmap inputImage, int threshold)
+        public void Binarize()
         {
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
             Bitmap binaryImage = new Bitmap(inputImage.Width, inputImage.Height);
+            int threshold = thresholdSlider.Value;
 
             for (int x = 0; x < inputImage.Width; ++x)
             {
@@ -159,14 +200,14 @@ namespace Lab1
                     binaryImage.SetPixel(x, y, Color.FromArgb(binaryValue, binaryValue, binaryValue));
                 }
             }
-
-            return binaryImage;
-
+            pictureBox1.Image = binaryImage;
         }
 
-        public static Bitmap AdjustBrightness(Bitmap inputImage, int brightnessLevel)
+        public void AdjustBrightness()
         {
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
             Bitmap adjustedImage = new Bitmap(inputImage.Width, inputImage.Height);
+            int brightnessLevel = thresholdSlider.Value;
 
             for (int x = 0; x < inputImage.Width; ++x)
             {
@@ -175,9 +216,9 @@ namespace Lab1
                     Color pixelColor = inputImage.GetPixel(x, y);
 
                     // Изменение каждого компонента RGB
-                    int red = (int)(pixelColor.R + (brightnessLevel * 2.55));
-                    int green = (int)(pixelColor.G + (brightnessLevel * 2.55));
-                    int blue = (int)(pixelColor.B + (brightnessLevel * 2.55));
+                    int red = (int)(pixelColor.R + brightnessLevel);
+                    int green = (int)(pixelColor.G + brightnessLevel);
+                    int blue = (int)(pixelColor.B + brightnessLevel);
 
                     // Ограничение значений RGB в диапазоне 0-255
                     red = Math.Min(255, Math.Max(0, red));
@@ -188,8 +229,12 @@ namespace Lab1
                     adjustedImage.SetPixel(x, y, Color.FromArgb(red, green, blue));
                 }
             }
+            pictureBox1.Image = adjustedImage;
+        }
 
-            return adjustedImage;
+        public void Blur()
+        {
+
         }
 
         abstract class Filters
@@ -274,6 +319,48 @@ namespace Lab1
             }
         }
 
+        private void ComboBoxChange(object sender, EventArgs e)
+        {
+            var item = (ComboItem)comboBox1.SelectedItem;
+            if (item.Minmax != null)
+            {
+                thresholdSlider.Enabled = true;
+                thresholdSlider.Minimum = item.Minmax.Value.Item1;
+                thresholdSlider.Maximum = item.Minmax.Value.Item2;
+                SliderChange(sender, e);
+            }
+            else
+            {
+                thresholdSlider.Enabled = false;
+            }
+        }
 
+        private void SliderChange(object sender, EventArgs e)
+        {
+            textBox3.Text = thresholdSlider.Value.ToString();
+        }
+
+
+        private delegate void Action();
+
+        private void OkButton_Click(object sender, EventArgs e)
+        {
+            EnableButtons(false);
+            Action handler = (Action)comboBox1.SelectedValue;
+            handler();
+            EnableButtons(true);
+        }
+
+        private void EnableButtons(bool state)
+        {
+            button1.Enabled = state;
+            button5.Enabled = state;
+            button7.Enabled = state;
+            comboBox1.Enabled = state;
+            textBox3.Enabled = state;
+            thresholdSlider.Enabled = state;
+            OKbutton.Enabled = state;
+        }
+        
     }
 }

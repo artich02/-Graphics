@@ -29,3 +29,14 @@ C:\Users\0001\Source\Repos\-Graphics\Lab1\Lab1\obj\Debug\Lab1.csproj.CoreCompile
 C:\Users\0001\Source\Repos\-Graphics\Lab1\Lab1\obj\Debug\Lab1.exe
 C:\Users\0001\Source\Repos\-Graphics\Lab1\Lab1\obj\Debug\Lab1.pdb
 C:\Users\0001\Source\Repos\-Graphics\Lab1\Lab1\obj\Debug\Lab1.Nazvanie.resources
+C:\Users\0001\Source\Repos\artich02\-Graphics\Lab1\Lab1\bin\Debug\Lab1.exe.config
+C:\Users\0001\Source\Repos\artich02\-Graphics\Lab1\Lab1\bin\Debug\Lab1.exe
+C:\Users\0001\Source\Repos\artich02\-Graphics\Lab1\Lab1\bin\Debug\Lab1.pdb
+C:\Users\0001\Source\Repos\artich02\-Graphics\Lab1\Lab1\obj\Debug\Lab1.csproj.AssemblyReference.cache
+C:\Users\0001\Source\Repos\artich02\-Graphics\Lab1\Lab1\obj\Debug\Lab1.csproj.SuggestedBindingRedirects.cache
+C:\Users\0001\Source\Repos\artich02\-Graphics\Lab1\Lab1\obj\Debug\Lab1.Form1.resources
+C:\Users\0001\Source\Repos\artich02\-Graphics\Lab1\Lab1\obj\Debug\Lab1.Properties.Resources.resources
+C:\Users\0001\Source\Repos\artich02\-Graphics\Lab1\Lab1\obj\Debug\Lab1.csproj.GenerateResource.cache
+C:\Users\0001\Source\Repos\artich02\-Graphics\Lab1\Lab1\obj\Debug\Lab1.csproj.CoreCompileInputs.cache
+C:\Users\0001\Source\Repos\artich02\-Graphics\Lab1\Lab1\obj\Debug\Lab1.exe
+C:\Users\0001\Source\Repos\artich02\-Graphics\Lab1\Lab1\obj\Debug\Lab1.pdb

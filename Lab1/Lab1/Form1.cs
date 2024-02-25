@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Lab1
@@ -9,7 +10,7 @@ namespace Lab1
     public partial class Form1 : Form
     {
         private Bitmap originalImage;
-        private bool imageProcessing = false;
+        private int slider = 125;
 
         private class ComboItem
         {
@@ -174,15 +175,17 @@ namespace Lab1
                                           + 0.1141f * originalColor.B);
                     grayBitmap.SetPixel(x, y, Color.FromArgb(grayValue, grayValue, grayValue));
                 }
+                progressBar1.Invoke((Action)(() => progressBar1.Value = y * 100 / inputImage.Height));
             }
             pictureBox1.Image = grayBitmap;
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
 
         public void Binarize()
         {
             Bitmap inputImage = new Bitmap(pictureBox1.Image);
             Bitmap binaryImage = new Bitmap(inputImage.Width, inputImage.Height);
-            int threshold = thresholdSlider.Value;
+            int threshold = slider;
 
             for (int x = 0; x < inputImage.Width; ++x)
             {
@@ -199,15 +202,17 @@ namespace Lab1
                     // Замена цвета пикселя
                     binaryImage.SetPixel(x, y, Color.FromArgb(binaryValue, binaryValue, binaryValue));
                 }
+                progressBar1.Invoke((Action)(() => progressBar1.Value = x * 100 / inputImage.Width));
             }
             pictureBox1.Image = binaryImage;
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
 
         public void AdjustBrightness()
         {
             Bitmap inputImage = new Bitmap(pictureBox1.Image);
             Bitmap adjustedImage = new Bitmap(inputImage.Width, inputImage.Height);
-            int brightnessLevel = thresholdSlider.Value;
+            int brightnessLevel = slider;
 
             for (int x = 0; x < inputImage.Width; ++x)
             {
@@ -228,8 +233,10 @@ namespace Lab1
                     // Замена цвета пикселя
                     adjustedImage.SetPixel(x, y, Color.FromArgb(red, green, blue));
                 }
+                progressBar1.Invoke((Action)(() => progressBar1.Value = x * 100 / inputImage.Width));
             }
             pictureBox1.Image = adjustedImage;
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
 
         public void Blur()
@@ -338,6 +345,7 @@ namespace Lab1
         private void SliderChange(object sender, EventArgs e)
         {
             textBox3.Text = thresholdSlider.Value.ToString();
+            slider = thresholdSlider.Value;
         }
 
 
@@ -347,8 +355,8 @@ namespace Lab1
         {
             EnableButtons(false);
             Action handler = (Action)comboBox1.SelectedValue;
-            handler();
-            EnableButtons(true);
+            var task = new Task(() => handler());
+            task.Start();
         }
 
         private void EnableButtons(bool state)
@@ -360,6 +368,7 @@ namespace Lab1
             textBox3.Enabled = state;
             thresholdSlider.Enabled = state;
             OKbutton.Enabled = state;
+            ComboBoxChange(null, null);
         }
         
     }

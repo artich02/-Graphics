@@ -4,12 +4,12 @@ using System.Windows.Forms;
 
 namespace Lab1
 {
-    public partial class Nazvanie : Form
+    public partial class Form1 : Form
     {
 
         private Bitmap originalImage;
         private Bitmap grayImage;
-        public Nazvanie()
+        public Form1()
         {
             InitializeComponent();
         }
@@ -141,7 +141,6 @@ namespace Lab1
 
         public static Bitmap Binarize(Bitmap inputImage, int threshold)
         {
-
             Bitmap binaryImage = new Bitmap(inputImage.Width, inputImage.Height);
 
             for (int x = 0; x < inputImage.Width; ++x)

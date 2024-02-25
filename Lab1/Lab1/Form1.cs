@@ -4,15 +4,12 @@ using System.Windows.Forms;
 
 namespace Lab1
 {
-
-
-    public partial class Form1 : Form
+    public partial class Nazvanie : Form
     {
 
         private Bitmap originalImage;
         private Bitmap grayImage;
-        private Bitmap binaryImage;
-        public Form1()
+        public Nazvanie()
         {
             InitializeComponent();
         }
@@ -20,8 +17,6 @@ namespace Lab1
         private void Form1_Load(object sender, EventArgs e)
         {
             //LoadImageFromFolder("C:\\Users\tar88\\Pictures\\IMG_0095.JPG");
-
-
         }
 
         private void LoadImageFromFolder(string imagePath)
@@ -52,15 +47,14 @@ namespace Lab1
             }
         }
 
-
-        private void button2_Click(object sender, EventArgs e)
+        private void GrayscaleButton_Click(object sender, EventArgs e)
         {
             // Конвертация в оттенки серого
             grayImage = ConvertToGrayScale(originalImage);
             pictureBox1.Image = grayImage;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void BinarizeButton_Click(object sender, EventArgs e)
         {
             if (pictureBox1.Image != null)
             {
@@ -75,7 +69,7 @@ namespace Lab1
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void BrightnessButton_Click(object sender, EventArgs e)
         {
 
             if (pictureBox1.Image != null)
@@ -91,7 +85,7 @@ namespace Lab1
             }
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void SaveButton_Click(object sender, EventArgs e)
         {
             if (pictureBox1.Image != null)
             {
@@ -224,21 +218,9 @@ namespace Lab1
                     return max;
                 return value;
             }
-
-
         }
 
-        class BlurFilter : MatrixFilter
-        {
-            public BlurFilter()
-            {
-                int sizeX = 3;
-                int sizeY = 3;
-                kernel = new float[sizeX, sizeY];
-                for (int j=0;int < sizeX; j++)
-                    for (int j = 0)
-            }
-        }
+
 
         class MatrixFilter : Filters
         {
@@ -261,7 +243,7 @@ namespace Lab1
                 for (int l = -radiusY; l < -radiusY; l++)
                 {
                     for (int k = -radiusX; k <= radiusX; k++)
-                    { 
+                    {
                         int idX = Clamp(x + k, 0, sourceImage.Width - 1);
                         int idY = Clamp(y + l, 0, sourceImage.Height - 1);
                         Color neighborColor = sourceImage.GetPixel(idX, idY);
@@ -275,6 +257,21 @@ namespace Lab1
                     Clamp((int)resultR, 0, 255),
                     Clamp((int)resultG, 0, 255),
                     Clamp((int)resultB, 0, 255));
+            }
+        }
+
+        class BlurFilter : MatrixFilter
+        {
+            public BlurFilter()
+            {
+                int sizeX = 3;
+                int sizeY = 3;
+                kernel = new float[sizeX, sizeY];
+                for (int i = 0; i < sizeX; i++)
+                {
+                    for (int j = 0; j < sizeY; j++)
+                        kernel[i, j] = 1.0f / (float)(sizeX * sizeY);
+                }
             }
         }
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Lab1
@@ -12,7 +11,9 @@ namespace Lab1
         private Bitmap originalImage;
         private int slider = 125;
 
-        private class ComboItem
+        public static Form1 It;
+
+        private struct ComboItem
         {
             public string Name { get; private set; }
             public Action Action { get; private set; }
@@ -32,16 +33,18 @@ namespace Lab1
         public Form1()
         {
             InitializeComponent();
+            It = this;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             var items = new List<ComboItem>
             {
-                new ComboItem("Серый",       () => ConvertToGrayScale()),
-                new ComboItem("Бинаризация", () => Binarize(), (0, 255)),
-                new ComboItem("Яркость",     () => AdjustBrightness(), (-255, 255)),
-                new ComboItem("Размытие (М)",() => Blur())
+                new ComboItem("Серый",          () => ConvertToGrayScale()),
+                new ComboItem("Бинаризация",    () => Binarize(),            (   0, 255)),
+                new ComboItem("Яркость",        () => AdjustBrightness(),    (-255, 255)),
+                new ComboItem("Размытие",       () => Blur()),
+                new ComboItem("Размытие Гаусс", () => GaussBlur())
             };
 
             comboBox1.DisplayMember = "Name"; // will display Name property
@@ -69,7 +72,7 @@ namespace Lab1
                 // Сохраняем исходное изображение
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
-                    saveFileDialog.Filter = "Images|*.png;*.bmp;*.jpg";
+                    saveFileDialog.Filter = "Images|*.png;*.bmp;*.jpg;*.jpeg;";
                     if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
                         string imagePath = saveFileDialog.FileName;
@@ -80,11 +83,14 @@ namespace Lab1
                                 format = ImageFormat.Png;
                                 break;
                             case ".jpg":
+                            case ".jpeg":
                                 format = ImageFormat.Jpeg;
                                 break;
                             case ".bmp":
                                 format = ImageFormat.Bmp;
                                 break;
+                            default:
+                                return;
                         }
                         pictureBox1.Image.Save(saveFileDialog.FileName, format);
                     }
@@ -97,68 +103,6 @@ namespace Lab1
         }
 
         /// ////////////////////////////////////////////////////////////
-        /*
-        private void GrayscaleButton_Click(object sender, EventArgs e)
-        {
-            // Конвертация в оттенки серого
-            Bitmap grayImage = ConvertToGrayScale(originalImage);
-            pictureBox1.Image = grayImage;
-        }
-        */
-        /*
-        private void BinarizeButton_Click(object sender, EventArgs e)
-        {
-            if (pictureBox1.Image != null)
-            {
-                // Бинаризация изображения по порогу
-                if (Convert.ToInt32(textBox2.Text) > 255)
-                    MessageBox.Show("Введите чило =<255");
-                else
-                {
-                    Bitmap binaryImage = Binarize((Bitmap)pictureBox1.Image, Convert.ToInt32(textBox2.Text));
-                    pictureBox1.Image = binaryImage;
-                }
-            }
-        }
-        */
-        /*
-        private void BrightnessButton_Click(object sender, EventArgs e)
-        {
-
-            if (pictureBox1.Image != null)
-            {
-                // Изменение яркости изображения на
-                if (Convert.ToInt32(textBox1.Text) > 100)
-                    MessageBox.Show("Введите чило =<100");
-                else
-                {
-                    Bitmap brightImage = AdjustBrightness((Bitmap)pictureBox1.Image, Convert.ToInt32(textBox1.Text));
-                    pictureBox1.Image = brightImage;
-                }
-            }
-        }
-        */
-
-        /// ////////////////////////////////////////////////////////////
-        /*
-        private void button6_Click(object sender, EventArgs e)
-        {
-            if (pictureBox1.Image != null)
-            {
-                // Матричное размытие
-                if (Convert.ToInt32(textBox1.Text) > 100)
-                    MessageBox.Show("Введите чило =<100");
-                else
-                {
-                    Bitmap brightImage = AdjustBrightness((Bitmap)pictureBox1.Image, Convert.ToInt32(textBox1.Text));
-                    pictureBox1.Image = brightImage;
-                }
-            }
-
-        }*/
-        /// ////////////////////////////////////////////////////////////
-
-        //private Bitmap _originalImage;
 
         // Функция для преобразования изображения в оттенки серого
         private void ConvertToGrayScale()
@@ -241,8 +185,20 @@ namespace Lab1
 
         public void Blur()
         {
-
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
+            Filters filter = new BlurFilter();
+            pictureBox1.Image = filter.processImage(inputImage);
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
+        public void GaussBlur()
+        {
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
+            Filters filter = new GaussianFilter();
+            pictureBox1.Image = filter.processImage(inputImage);
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
+        }
+
+
 
         abstract class Filters
         {
@@ -257,6 +213,7 @@ namespace Lab1
                     {
                         resultImg.SetPixel(i, j, calculateNewPixelColor(sourceImage, i, j));
                     }
+                    It.progressBar1.Invoke((Action)(() => It.progressBar1.Value = i * 100 / sourceImage.Width +1));
                 }
                 return resultImg;
             }
@@ -270,8 +227,6 @@ namespace Lab1
                 return value;
             }
         }
-
-
 
         class MatrixFilter : Filters
         {
@@ -291,7 +246,7 @@ namespace Lab1
                 float resultG = 0;
                 float resultB = 0;
 
-                for (int l = -radiusY; l < -radiusY; l++)
+                for (int l = -radiusY; l <= radiusY; l++)
                 {
                     for (int k = -radiusX; k <= radiusX; k++)
                     {
@@ -302,7 +257,6 @@ namespace Lab1
                         resultG += neighborColor.G * kernel[k + radiusX, l + radiusY];
                         resultB += neighborColor.B * kernel[k + radiusX, l + radiusY];
                     }
-
                 }
                 return Color.FromArgb(
                     Clamp((int)resultR, 0, 255),
@@ -315,8 +269,8 @@ namespace Lab1
         {
             public BlurFilter()
             {
-                int sizeX = 3;
-                int sizeY = 3;
+                int sizeX = 7;
+                int sizeY = 7;
                 kernel = new float[sizeX, sizeY];
                 for (int i = 0; i < sizeX; i++)
                 {
@@ -325,6 +279,38 @@ namespace Lab1
                 }
             }
         }
+
+        class GaussianFilter : MatrixFilter
+        {
+            public GaussianFilter()
+            {
+                CreateGaussanKernel(3, 2);
+            }
+
+            public void CreateGaussanKernel(int radius, float sigma)
+            {
+                int size = 2 * radius + 1;
+                kernel = new float[size, size];
+
+                float norm = 0;
+
+                for (int i = -radius; i <= radius; i++)
+                {
+                    for (int j = -radius; j <= radius; j++)
+                    {
+                        kernel[i + radius, j + radius] = (float)(Math.Exp(-(i * i + j * j) / (2 * sigma * sigma)));
+                        norm += kernel[i + radius, j + radius];
+                    }
+                }
+
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = 0; j < size; j++)
+                        kernel[i, j] /= norm;
+                }
+            }
+        }
+
 
         private void ComboBoxChange(object sender, EventArgs e)
         {
@@ -355,8 +341,9 @@ namespace Lab1
         {
             EnableButtons(false);
             Action handler = (Action)comboBox1.SelectedValue;
-            var task = new Task(() => handler());
-            task.Start();
+            handler();
+            //var task = new Task(() => handler());
+            //task.Start();
         }
 
         private void EnableButtons(bool state)
@@ -370,6 +357,6 @@ namespace Lab1
             OKbutton.Enabled = state;
             ComboBoxChange(null, null);
         }
-        
+
     }
 }

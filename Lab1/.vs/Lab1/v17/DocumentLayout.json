@@ -1,0 +1,68 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\WORK ARTEM\\GraphicsUNN\\LabWork 0\\Lab1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D0E411D0-FF1E-4F0E-A77A-E5858EB8F402}|Lab1\\Lab1.csproj|d:\\work artem\\graphicsunn\\labwork 0\\lab1\\lab1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0E411D0-FF1E-4F0E-A77A-E5858EB8F402}|Lab1\\Lab1.csproj|solutionrelative:lab1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0E411D0-FF1E-4F0E-A77A-E5858EB8F402}|Lab1\\Lab1.csproj|D:\\WORK ARTEM\\GraphicsUNN\\LabWork 0\\Lab1\\lab1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{D0E411D0-FF1E-4F0E-A77A-E5858EB8F402}|Lab1\\Lab1.csproj|solutionrelative:lab1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0E411D0-FF1E-4F0E-A77A-E5858EB8F402}|Lab1\\Lab1.csproj|D:\\WORK ARTEM\\GraphicsUNN\\LabWork 0\\Lab1\\lab1\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0E411D0-FF1E-4F0E-A77A-E5858EB8F402}|Lab1\\Lab1.csproj|solutionrelative:lab1\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Form1.Designer.cs",
+              "DocumentMoniker": "D:\\WORK ARTEM\\GraphicsUNN\\LabWork 0\\Lab1\\Lab1\\Form1.Designer.cs",
+              "RelativeDocumentMoniker": "Lab1\\Form1.Designer.cs",
+              "ToolTip": "D:\\WORK ARTEM\\GraphicsUNN\\LabWork 0\\Lab1\\Lab1\\Form1.Designer.cs",
+              "RelativeToolTip": "Lab1\\Form1.Designer.cs",
+              "ViewState": "AQIAAAUAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-02-20T06:35:06.466Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "D:\\WORK ARTEM\\GraphicsUNN\\LabWork 0\\Lab1\\Lab1\\Form1.cs",
+              "RelativeDocumentMoniker": "Lab1\\Form1.cs",
+              "ToolTip": "D:\\WORK ARTEM\\GraphicsUNN\\LabWork 0\\Lab1\\Lab1\\Form1.cs",
+              "RelativeToolTip": "Lab1\\Form1.cs",
+              "ViewState": "AQIAANsAAAAAAAAAAAAgwO4AAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-02-19T10:53:35.366Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "DocumentMoniker": "D:\\WORK ARTEM\\GraphicsUNN\\LabWork 0\\Lab1\\Lab1\\Form1.cs",
+              "RelativeDocumentMoniker": "Lab1\\Form1.cs",
+              "ToolTip": "D:\\GraphicsUNN\\Lab1\\Lab1\\Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "RelativeToolTip": "..\\..\\..\\..\\GraphicsUNN\\Lab1\\Lab1\\Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-02-19T10:35:41.565Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+D:\WORK ARTEM\GraphicsUNN\Lab1\Lab1\bin\Debug\Lab1.exe.config
+D:\WORK ARTEM\GraphicsUNN\Lab1\Lab1\bin\Debug\Lab1.exe
+D:\WORK ARTEM\GraphicsUNN\Lab1\Lab1\bin\Debug\Lab1.pdb
+D:\WORK ARTEM\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.csproj.AssemblyReference.cache
+D:\WORK ARTEM\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.Properties.Resources.resources
+D:\WORK ARTEM\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.csproj.GenerateResource.cache
+D:\WORK ARTEM\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.csproj.CoreCompileInputs.cache
+D:\WORK ARTEM\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.exe
+D:\WORK ARTEM\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.pdb
+D:\WORK ARTEM\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.Form1.resources
+D:\GraphicsUNN\Lab1\Lab1\bin\Debug\Lab1.exe.config
+D:\GraphicsUNN\Lab1\Lab1\bin\Debug\Lab1.exe
+D:\GraphicsUNN\Lab1\Lab1\bin\Debug\Lab1.pdb
+D:\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.csproj.AssemblyReference.cache
+D:\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.Form1.resources
+D:\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.Properties.Resources.resources
+D:\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.csproj.GenerateResource.cache
+D:\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.csproj.CoreCompileInputs.cache
+D:\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.exe
+D:\GraphicsUNN\Lab1\Lab1\obj\Debug\Lab1.pdb

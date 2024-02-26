@@ -1,8 +1,12 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Runtime.InteropServices;
 
 namespace Lab1
 {
@@ -53,8 +57,8 @@ namespace Lab1
                 new ComboItem("Резкость",       () => Sharpness())
             };
 
-            comboBox1.DisplayMember = "Name"; // will display Name property
-            comboBox1.ValueMember = "Action"; // will select Value property
+            comboBox1.DisplayMember = "Name";
+            comboBox1.ValueMember = "Action";
             comboBox1.DataSource = items;
         }
 
@@ -267,8 +271,8 @@ namespace Lab1
             progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
 
-
-
+        /// ////////////////////////////////////////////////////////////
+        
         abstract class Filters
         {
             protected abstract Color calculateNewPixelColor(Bitmap sourceImage, int x, int y);
@@ -416,7 +420,7 @@ namespace Lab1
             }
         }
 
-
+        /// ////////////////////////////////////////////////////////////
 
         private void ComboBoxChange(object sender, EventArgs e)
         {
@@ -447,9 +451,8 @@ namespace Lab1
         {
             EnableButtons(false);
             Action handler = (Action)comboBox1.SelectedValue;
-            handler();
-            //var task = new Task(() => handler());
-            //task.Start();
+            var task = new Task(() => handler());
+            task.Start();
         }
 
         private void EnableButtons(bool state)

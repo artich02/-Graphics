@@ -35,6 +35,7 @@ namespace Lab1
         {
             InitializeComponent();
             It = this;
+            progressBar1.Maximum = progressbarMaxVal;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -44,8 +45,12 @@ namespace Lab1
                 new ComboItem("Серый",          () => ConvertToGrayScale()),
                 new ComboItem("Бинаризация",    () => Binarize(),            (   0, 255)),
                 new ComboItem("Яркость",        () => AdjustBrightness(),    (-255, 255)),
+                new ComboItem("Сепия",          () => ApplySepiaFilter()),
                 new ComboItem("Размытие",       () => Blur()),
-                new ComboItem("Размытие Гаусс", () => GaussBlur())
+                new ComboItem("Размытие Гаусс", () => GaussBlur()),
+                new ComboItem("Собель X",       () => SobelX()),
+                new ComboItem("Собель Y",       () => SobelY()),
+                new ComboItem("Резкость",       () => Sharpness())
             };
 
             comboBox1.DisplayMember = "Name"; // will display Name property
@@ -184,6 +189,40 @@ namespace Lab1
             progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
 
+        // Фильтр Сепия
+        public Bitmap ApplySepiaFilter()
+        {
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
+            Bitmap SepiaImage = new Bitmap(inputImage.Width, inputImage.Height);
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    Color pixelColor = inputImage.GetPixel(x, y);
+                    int r = pixelColor.R;
+                    int g = pixelColor.G;
+                    int b = pixelColor.B;
+
+                    int newR = (int)(0.393 * r + 0.769 * g + 0.189 * b);
+                    int newG = (int)(0.349 * r + 0.686 * g + 0.168 * b);
+                    int newB = (int)(0.272 * r + 0.534 * g + 0.131 * b);
+
+                    newR = Math.Min(255, newR);
+                    newG = Math.Min(255, newG);
+                    newB = Math.Min(255, newB);
+
+                    Color newColor = Color.FromArgb(newR, newG, newB);
+                    SepiaImage.SetPixel(x, y, newColor);
+                }
+                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Width));
+            }
+            pictureBox1.Image = SepiaImage;
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
+            return SepiaImage;
+        }
+
+        // Фильтр размытие
         public void Blur()
         {
             Bitmap inputImage = new Bitmap(pictureBox1.Image);
@@ -191,10 +230,39 @@ namespace Lab1
             pictureBox1.Image = filter.processImage(inputImage);
             progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
+
+        // Фильтр размытие по Гауссу
         public void GaussBlur()
         {
             Bitmap inputImage = new Bitmap(pictureBox1.Image);
             Filters filter = new GaussianFilter();
+            pictureBox1.Image = filter.processImage(inputImage);
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
+        }
+
+        // Фильтр Собебя
+        public void SobelX()
+        {
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
+            Filters filter = new SobelOperator(false);
+            pictureBox1.Image = filter.processImage(inputImage);
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
+        }
+
+        // Фильтр Собуля
+        public void SobelY()
+        {
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
+            Filters filter = new SobelOperator(true);
+            pictureBox1.Image = filter.processImage(inputImage);
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
+        }
+
+        // Фильтр резкости
+        public void Sharpness()
+        {
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
+            Filters filter = new SharpnessFilter();
             pictureBox1.Image = filter.processImage(inputImage);
             progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
@@ -214,7 +282,7 @@ namespace Lab1
                     {
                         resultImg.SetPixel(i, j, calculateNewPixelColor(sourceImage, i, j));
                     }
-                    It.progressBar1.Invoke((Action)(() => It.progressBar1.Value = i * progressbarMaxVal / sourceImage.Width +1));
+                    It.progressBar1.Invoke((Action)(() => It.progressBar1.Value = i * progressbarMaxVal / sourceImage.Width + 1));
                 }
                 return resultImg;
             }
@@ -311,6 +379,43 @@ namespace Lab1
                 }
             }
         }
+
+        class SobelOperator : MatrixFilter
+        {
+            public SobelOperator(bool Yaxis)
+            {
+                CreateSobelKernel(Yaxis);
+            }
+
+            public void CreateSobelKernel(bool Yaxis)
+            {
+                int a = 2, b = 1;
+                if (Yaxis)
+                    kernel = new float[,]{{-b, -a, -b},
+                                          { 0,  0,  0},
+                                          { b,  a,  b}};
+                else
+                    kernel = new float[,]{{-b,  0,  b},
+                                          {-a,  0,  a},
+                                          {-b,  0,  b}};
+            }
+        }
+
+        class SharpnessFilter : MatrixFilter
+        {
+            public SharpnessFilter()
+            {
+                CreateSharpKernel();
+            }
+
+            public void CreateSharpKernel()
+            {
+                kernel = new float[,]{{ 0, -1,  0},
+                                      {-1,  5, -1},
+                                      { 0, -1,  0}};
+            }
+        }
+
 
 
         private void ComboBoxChange(object sender, EventArgs e)

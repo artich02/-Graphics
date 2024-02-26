@@ -10,6 +10,7 @@ namespace Lab1
     {
         private Bitmap originalImage;
         private int slider = 125;
+        private const int progressbarMaxVal = 1000;
 
         public static Form1 It;
 
@@ -119,7 +120,7 @@ namespace Lab1
                                           + 0.1141f * originalColor.B);
                     grayBitmap.SetPixel(x, y, Color.FromArgb(grayValue, grayValue, grayValue));
                 }
-                progressBar1.Invoke((Action)(() => progressBar1.Value = y * 100 / inputImage.Height));
+                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Height));
             }
             pictureBox1.Image = grayBitmap;
             progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
@@ -146,7 +147,7 @@ namespace Lab1
                     // Замена цвета пикселя
                     binaryImage.SetPixel(x, y, Color.FromArgb(binaryValue, binaryValue, binaryValue));
                 }
-                progressBar1.Invoke((Action)(() => progressBar1.Value = x * 100 / inputImage.Width));
+                progressBar1.Invoke((Action)(() => progressBar1.Value = x * progressbarMaxVal / inputImage.Width));
             }
             pictureBox1.Image = binaryImage;
             progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
@@ -177,7 +178,7 @@ namespace Lab1
                     // Замена цвета пикселя
                     adjustedImage.SetPixel(x, y, Color.FromArgb(red, green, blue));
                 }
-                progressBar1.Invoke((Action)(() => progressBar1.Value = x * 100 / inputImage.Width));
+                progressBar1.Invoke((Action)(() => progressBar1.Value = x * progressbarMaxVal / inputImage.Width));
             }
             pictureBox1.Image = adjustedImage;
             progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
@@ -213,7 +214,7 @@ namespace Lab1
                     {
                         resultImg.SetPixel(i, j, calculateNewPixelColor(sourceImage, i, j));
                     }
-                    It.progressBar1.Invoke((Action)(() => It.progressBar1.Value = i * 100 / sourceImage.Width +1));
+                    It.progressBar1.Invoke((Action)(() => It.progressBar1.Value = i * progressbarMaxVal / sourceImage.Width +1));
                 }
                 return resultImg;
             }

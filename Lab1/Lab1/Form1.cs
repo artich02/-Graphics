@@ -1,12 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
 using System.Threading.Tasks;
-using System.Threading;
-using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace Lab1
 {
@@ -35,6 +32,11 @@ namespace Lab1
             }
         }
 
+        public static int Clamp(int value, int min, int max)
+        {
+            return (value < min) ? min : (value > max) ? max : value;
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -50,16 +52,24 @@ namespace Lab1
                 new ComboItem("Бинаризация",    () => Binarize(),            (   0, 255)),
                 new ComboItem("Яркость",        () => AdjustBrightness(),    (-255, 255)),
                 new ComboItem("Сепия",          () => ApplySepiaFilter()),
+                new ComboItem("Стекло",         () => Glass()),
                 new ComboItem("Размытие",       () => Blur()),
                 new ComboItem("Размытие Гаусс", () => GaussBlur()),
                 new ComboItem("Собель X",       () => SobelX()),
                 new ComboItem("Собель Y",       () => SobelY()),
-                new ComboItem("Резкость",       () => Sharpness())
+                new ComboItem("Резкость",       () => Sharpness()),
+                new ComboItem("Перенос X",      () => MoveImageX(),          (0, 0)),
+                new ComboItem("Перенос Y",      () => MoveImageY(),          (0, 0)),
+                new ComboItem("Вращение",       () => RotateImage(),         (-180, 180))
+
             };
 
             comboBox1.DisplayMember = "Name";
             comboBox1.ValueMember = "Action";
             comboBox1.DataSource = items;
+
+            EnableButtons(false);
+            loadButton.Enabled = true;
         }
 
         private void LoadImageButton_Click(object sender, EventArgs e)
@@ -74,6 +84,7 @@ namespace Lab1
                     pictureBox1.Image = originalImage;
                 }
             }
+            EnableButtons(true);
         }
         private void SaveButton_Click(object sender, EventArgs e)
         {
@@ -194,7 +205,7 @@ namespace Lab1
         }
 
         // Фильтр Сепия
-        public Bitmap ApplySepiaFilter()
+        public void ApplySepiaFilter()
         {
             Bitmap inputImage = new Bitmap(pictureBox1.Image);
             Bitmap SepiaImage = new Bitmap(inputImage.Width, inputImage.Height);
@@ -223,7 +234,111 @@ namespace Lab1
             }
             pictureBox1.Image = SepiaImage;
             progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
-            return SepiaImage;
+        }
+
+        public void Glass()
+        {
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
+            Bitmap resultImage = inputImage;
+            var rand = new Random();
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    Color pixelColor = inputImage.GetPixel(x, y);
+
+                    int xAxis = x + rand.Next(9) - 4;
+                    int yAxis = y + rand.Next(9) - 4;
+                    if (inputImage.Width <= xAxis || xAxis < 0 || inputImage.Height <= yAxis || yAxis < 0)
+                        break;
+                    resultImage.SetPixel(xAxis, yAxis, pixelColor);
+                }
+                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Width));
+            }
+            pictureBox1.Image = resultImage;
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
+        }
+
+        public void MoveImageX()
+        {
+            int move = slider;
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
+            Bitmap resultImage = new Bitmap(inputImage.Width, inputImage.Height);
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    int tx = x - move;
+                    if (tx < 0 || tx >= resultImage.Width)
+                    {
+                        resultImage.SetPixel(x, y, Color.Black);
+                        continue;
+                    }
+                    
+                    Color pixelColor = inputImage.GetPixel(tx, y);
+                    resultImage.SetPixel(x, y, pixelColor);
+                }
+                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Width));
+            }
+            pictureBox1.Image = resultImage;
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
+        }
+
+        public void MoveImageY()
+        {
+            int move = slider;
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
+            Bitmap resultImage = new Bitmap(inputImage.Width, inputImage.Height);
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    int ty = y - move;
+                    if (ty < 0 || ty >= resultImage.Height)
+                    {
+                        resultImage.SetPixel(x, y, Color.Black);
+                        continue;
+                    }
+
+                    Color pixelColor = inputImage.GetPixel(x, ty);
+                    resultImage.SetPixel(x, y, pixelColor);
+                }
+                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Width));
+            }
+            pictureBox1.Image = resultImage;
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
+        }
+
+        public void RotateImage()
+        {
+            float μ = (float)Math.PI * slider / 180.0f;
+            Bitmap inputImage = new Bitmap(pictureBox1.Image);
+            Bitmap resultImage = new Bitmap(inputImage.Width, inputImage.Height);
+            int x0 = inputImage.Width  / 2;
+            int y0 = inputImage.Height / 2;
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    int tx = (int)((x - x0) * Math.Cos(μ) - (y - y0) * Math.Sin(μ) + x0);
+                    int ty = (int)((x - x0) * Math.Sin(μ) + (y - y0) * Math.Cos(μ) + y0);
+
+                    if (ty < 0 || ty >= resultImage.Height || tx < 0 || tx >= resultImage.Width)
+                    {
+                        resultImage.SetPixel(x, y, Color.Black);
+                        continue;
+                    }
+                    Color pixelColor = inputImage.GetPixel(tx, ty);
+                    resultImage.SetPixel(x, y, pixelColor);
+                }
+                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Width));
+            }
+            pictureBox1.Image = resultImage;
+            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
 
         // Фильтр размытие
@@ -272,7 +387,7 @@ namespace Lab1
         }
 
         /// ////////////////////////////////////////////////////////////
-        
+
         abstract class Filters
         {
             protected abstract Color calculateNewPixelColor(Bitmap sourceImage, int x, int y);
@@ -425,11 +540,24 @@ namespace Lab1
         private void ComboBoxChange(object sender, EventArgs e)
         {
             var item = (ComboItem)comboBox1.SelectedItem;
-            if (item.Minmax != null)
+            if (item.Minmax != null && pictureBox1.Image != null)
             {
                 thresholdSlider.Enabled = true;
-                thresholdSlider.Minimum = item.Minmax.Value.Item1;
-                thresholdSlider.Maximum = item.Minmax.Value.Item2;
+                if (item.Name == "Перенос X" )
+                {
+                    thresholdSlider.Minimum = -pictureBox1.Image.Width;
+                    thresholdSlider.Maximum = pictureBox1.Image.Width;
+                }
+                else if (item.Name == "Перенос Y")
+                {
+                    thresholdSlider.Minimum = -pictureBox1.Image.Height;
+                    thresholdSlider.Maximum = pictureBox1.Image.Height;
+                }
+                else
+                {
+                    thresholdSlider.Minimum = item.Minmax.Value.Item1;
+                    thresholdSlider.Maximum = item.Minmax.Value.Item2;
+                }
                 SliderChange(sender, e);
             }
             else
@@ -449,15 +577,18 @@ namespace Lab1
 
         private void OkButton_Click(object sender, EventArgs e)
         {
+            if (pictureBox1.Image == null)
+                return;
             EnableButtons(false);
             Action handler = (Action)comboBox1.SelectedValue;
-            var task = new Task(() => handler());
-            task.Start();
+            handler();
+            //var task = new Task(() => handler());
+            //task.Start();
         }
 
         private void EnableButtons(bool state)
         {
-            button1.Enabled = state;
+            loadButton.Enabled = state;
             button5.Enabled = state;
             button7.Enabled = state;
             comboBox1.Enabled = state;

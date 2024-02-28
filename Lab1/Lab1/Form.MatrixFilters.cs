@@ -124,5 +124,39 @@ namespace Lab1
                                       { 0, -1,  0}};
             }
         }
+        // Фильтр размытие
+        public void Blur()
+        {
+            Filters filter = new BlurFilter();
+            filter.processImage((Bitmap)pictureBox1.Image);
+        }
+
+        // Фильтр размытие по Гауссу
+        public void GaussBlur()
+        {
+            Filters filter = new GaussianFilter();
+            filter.processImage((Bitmap)pictureBox1.Image);
+        }
+
+        // Фильтр Собебя
+        public void SobelX()
+        {
+            Filters filter = new SobelOperator(false);
+            filter.processImage((Bitmap)pictureBox1.Image);
+        }
+
+        // Фильтр Собуля
+        public void SobelY()
+        {
+            Filters filter = new SobelOperator(true);
+            filter.processImage((Bitmap)pictureBox1.Image);
+        }
+
+        // Фильтр резкости
+        public void Sharpness()
+        {
+            Filters filter = new SharpnessFilter();
+            filter.processImage((Bitmap)pictureBox1.Image);
+        }
     }
 }

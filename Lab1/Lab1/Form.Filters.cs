@@ -46,11 +46,6 @@ namespace Lab1
                 return Color.FromArgb(grayValue, grayValue, grayValue);
             }
         }
-        public void ConvertToGrayScale()
-        {
-            Filters filter = new ToGrayScale();
-            filter.processImage((Bitmap)pictureBox1.Image);
-        }
 
         class Binarization : Filters
         {
@@ -63,11 +58,6 @@ namespace Lab1
 
                 return Color.FromArgb(binaryValue, binaryValue, binaryValue);
             }
-        }
-        public void Binarize()
-        {
-            Filters filter = new Binarization();
-            filter.processImage((Bitmap)pictureBox1.Image);
         }
 
         class Brightness : Filters
@@ -85,11 +75,6 @@ namespace Lab1
 
                 return Color.FromArgb(red, green, blue);
             }
-        }
-        public void AdjustBrightness()
-        {
-            Filters filter = new Brightness();
-            filter.processImage((Bitmap)pictureBox1.Image);
         }
 
         class Sepia : Filters
@@ -112,200 +97,89 @@ namespace Lab1
                 return Color.FromArgb(newR, newG, newB);
             }
         }
-        public void ApplySepiaFilter()
-        {
-            Filters filter = new Sepia();
-            filter.processImage((Bitmap)pictureBox1.Image);
-        }
 
-        public void Glass()
+        class GlassFilter : Filters
         {
-            Bitmap inputImage = new Bitmap(pictureBox1.Image);
-            Bitmap resultImage = inputImage;
-            var rand = new Random();
+            static Random rand;
 
-            for (int y = 0; y < inputImage.Height; y++)
+            public GlassFilter()
             {
-                for (int x = 0; x < inputImage.Width; x++)
-                {
-                    Color pixelColor = inputImage.GetPixel(x, y);
-
-                    int xAxis = x + rand.Next(9) - 4;
-                    int yAxis = y + rand.Next(9) - 4;
-                    if (inputImage.Width <= xAxis || xAxis < 0 || inputImage.Height <= yAxis || yAxis < 0)
-                        break;
-                    resultImage.SetPixel(xAxis, yAxis, pixelColor);
-                }
-                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Height));
+                rand = new Random();
             }
-            pictureBox1.Image = resultImage;
-            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
-        }
 
-        public void MoveImageX()
-        {
-            int move = slider;
-            Bitmap inputImage = new Bitmap(pictureBox1.Image);
-            Bitmap resultImage = new Bitmap(inputImage.Width, inputImage.Height);
-
-            for (int y = 0; y < inputImage.Height; y++)
+            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
-                for (int x = 0; x < inputImage.Width; x++)
-                {
-                    int tx = x - move;
-                    if (tx < 0 || tx >= resultImage.Width)
-                    {
-                        resultImage.SetPixel(x, y, Color.Black);
-                        continue;
-                    }
+                int xAxis = x + rand.Next(9) - 4;
+                int yAxis = y + rand.Next(9) - 4;
+                if (sourceImage.Width <= xAxis || xAxis < 0 || sourceImage.Height <= yAxis || yAxis < 0)
+                    return sourceImage.GetPixel(x, y);
 
-                    Color pixelColor = inputImage.GetPixel(tx, y);
-                    resultImage.SetPixel(x, y, pixelColor);
-                }
-                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Height));
+                return sourceImage.GetPixel(xAxis, yAxis);
             }
-            pictureBox1.Image = resultImage;
-            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
 
-        public void MoveImageY()
+        class MoveImageFilterX : Filters
         {
-            int move = slider;
-            Bitmap inputImage = new Bitmap(pictureBox1.Image);
-            Bitmap resultImage = new Bitmap(inputImage.Width, inputImage.Height);
-
-            for (int y = 0; y < inputImage.Height; y++)
+            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
-                for (int x = 0; x < inputImage.Width; x++)
-                {
-                    int ty = y - move;
-                    if (ty < 0 || ty >= resultImage.Height)
-                    {
-                        resultImage.SetPixel(x, y, Color.Black);
-                        continue;
-                    }
-
-                    Color pixelColor = inputImage.GetPixel(x, ty);
-                    resultImage.SetPixel(x, y, pixelColor);
-                }
-                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Height));
+                int tx = x - It.slider;
+                if (tx < 0 || tx >= sourceImage.Width)
+                    return Color.Black;
+                return sourceImage.GetPixel(tx, y);
             }
-            pictureBox1.Image = resultImage;
-            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
 
-        public void RotateImage()
+        class MoveImageFilterY : Filters
         {
-            float μ = (float)Math.PI * slider / 180.0f;
-            Bitmap inputImage = new Bitmap(pictureBox1.Image);
-            Bitmap resultImage = new Bitmap(inputImage.Width, inputImage.Height);
-            int x0 = inputImage.Width / 2;
-            int y0 = inputImage.Height / 2;
-
-            for (int y = 0; y < inputImage.Height; y++)
+            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
-                for (int x = 0; x < inputImage.Width; x++)
-                {
-                    int tx = (int)((x - x0) * Math.Cos(μ) - (y - y0) * Math.Sin(μ) + x0);
-                    int ty = (int)((x - x0) * Math.Sin(μ) + (y - y0) * Math.Cos(μ) + y0);
-
-                    if (ty < 0 || ty >= resultImage.Height || tx < 0 || tx >= resultImage.Width)
-                    {
-                        resultImage.SetPixel(x, y, Color.Black);
-                        continue;
-                    }
-                    Color pixelColor = inputImage.GetPixel(tx, ty);
-                    resultImage.SetPixel(x, y, pixelColor);
-                }
-                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Height));
+                int ty = y - It.slider;
+                if (ty < 0 || ty >= sourceImage.Height)
+                    return Color.Black;
+                return sourceImage.GetPixel(x, ty);
             }
-            pictureBox1.Image = resultImage;
-            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
 
-        public void WaveXImage()
+        class RotateImageFilter : Filters
         {
-            Bitmap inputImage = new Bitmap(pictureBox1.Image);
-            Bitmap resultImage = new Bitmap(inputImage.Width, inputImage.Height);
+            static private readonly int x0 = It.pictureBox1.Image.Width / 2;
+            static private readonly int y0 = It.pictureBox1.Image.Height / 2;
+            static private readonly float μ = (float)Math.PI * It.slider / 180.0f;
 
-            for (int y = 0; y < inputImage.Height; y++)
+            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
-                for (int x = 0; x < inputImage.Width; x++)
-                {
-                    int tx = (int)(x + 20 * Math.Sin(2 * Math.PI * y /60));
+                int tx = (int)((x - x0) * Math.Cos(μ) - (y - y0) * Math.Sin(μ) + x0);
+                int ty = (int)((x - x0) * Math.Sin(μ) + (y - y0) * Math.Cos(μ) + y0);
 
-                    if (tx < 0 || tx >= resultImage.Width)
-                    {
-                        resultImage.SetPixel(x, y, Color.Black);
-                        continue;
-                    }
-                    Color pixelColor = inputImage.GetPixel(tx, y);
-                    resultImage.SetPixel(x, y, pixelColor);
-                }
-                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Height));
+                if (ty < 0 || ty >= sourceImage.Height || tx < 0 || tx >= sourceImage.Width)
+                    return Color.Black;
+                return sourceImage.GetPixel(tx, ty);
             }
-            pictureBox1.Image = resultImage;
-            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
 
-        public void WaveYImage()
+        class WaveXImageFilter : Filters
         {
-            Bitmap inputImage = new Bitmap(pictureBox1.Image);
-            Bitmap resultImage = new Bitmap(inputImage.Width, inputImage.Height);
-
-            for (int y = 0; y < inputImage.Height; y++)
+            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
-                for (int x = 0; x < inputImage.Width; x++)
-                {
-                    int ty = (int)(y + 20 * Math.Sin(2 * Math.PI * x /60));
+                int tx = (int)(x + 20 * Math.Sin(2 * Math.PI * y / 60));
 
-                    if (ty < 0 || ty >= resultImage.Height)
-                    {
-                        resultImage.SetPixel(x, y, Color.Black);
-                        continue;
-                    }
-                    Color pixelColor = inputImage.GetPixel(x, ty);
-                    resultImage.SetPixel(x, y, pixelColor);
-                }
-                progressBar1.Invoke((Action)(() => progressBar1.Value = y * progressbarMaxVal / inputImage.Height));
+                if (tx < 0 || tx >= sourceImage.Width)
+                    return Color.Black;
+                return sourceImage.GetPixel(tx, y);
             }
-            pictureBox1.Image = resultImage;
-            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
         }
 
-        // Фильтр размытие
-        public void Blur()
+        class WaveYImageFilter : Filters
         {
-            Filters filter = new BlurFilter();
-            filter.processImage((Bitmap)pictureBox1.Image);
+            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+            {
+                int ty = (int)(y + 20 * Math.Sin(2 * Math.PI * x / 60));
+
+                if (ty < 0 || ty >= sourceImage.Height)
+                    return Color.Black;
+                return sourceImage.GetPixel(x, ty);
+            }
         }
 
-        // Фильтр размытие по Гауссу
-        public void GaussBlur()
-        {
-            Filters filter = new GaussianFilter();
-            filter.processImage((Bitmap)pictureBox1.Image);
-        }
-
-        // Фильтр Собебя
-        public void SobelX()
-        {
-            Filters filter = new SobelOperator(false);
-            filter.processImage((Bitmap)pictureBox1.Image);
-        }
-
-        // Фильтр Собуля
-        public void SobelY()
-        {
-            Filters filter = new SobelOperator(true);
-            filter.processImage((Bitmap)pictureBox1.Image);
-        }
-
-        // Фильтр резкости
-        public void Sharpness()
-        {
-            Filters filter = new SharpnessFilter();
-            filter.processImage((Bitmap)pictureBox1.Image);
-        }
     }
 }

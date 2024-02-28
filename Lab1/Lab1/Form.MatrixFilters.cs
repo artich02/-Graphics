@@ -6,34 +6,6 @@ namespace Lab1
 {
     public partial class Form1 : Form
     {
-        abstract class Filters
-        {
-            protected abstract Color calculateNewPixelColor(Bitmap sourceImage, int x, int y);
-
-            public Bitmap processImage(Bitmap sourceImage)
-            {
-                Bitmap resultImg = new Bitmap(sourceImage.Width, sourceImage.Height);
-                for (int i = 0; i < sourceImage.Width; i++)
-                {
-                    for (int j = 0; j < sourceImage.Height; j++)
-                    {
-                        resultImg.SetPixel(i, j, calculateNewPixelColor(sourceImage, i, j));
-                    }
-                    It.progressBar1.Invoke((Action)(() => It.progressBar1.Value = i * progressbarMaxVal / sourceImage.Width + 1));
-                }
-                return resultImg;
-            }
-
-            public int Clamp(int value, int min, int max)
-            {
-                if (value < min)
-                    return min;
-                if (value > max)
-                    return max;
-                return value;
-            }
-        }
-
         class MatrixFilter : Filters
         {
             protected float[,] kernel = null;

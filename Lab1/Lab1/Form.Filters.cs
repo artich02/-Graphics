@@ -8,16 +8,16 @@ namespace Lab1
     {
         abstract class Filters
         {
-            protected abstract Color calculateNewPixelColor(Bitmap sourceImage, int x, int y);
+            protected abstract Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y);
 
-            public void processImage(Bitmap sourceImage)
+            public void ProcessImage(Bitmap sourceImage)
             {
                 Bitmap resultImg = new Bitmap(sourceImage.Width, sourceImage.Height);
                 for (int i = 0; i < sourceImage.Width; i++)
                 {
                     for (int j = 0; j < sourceImage.Height; j++)
                     {
-                        resultImg.SetPixel(i, j, calculateNewPixelColor(sourceImage, i, j));
+                        resultImg.SetPixel(i, j, CalculateNewPixelColor(sourceImage, i, j));
                     }
                     It.progressBar1.Invoke((Action)(() => It.progressBar1.Value = i * progressbarMaxVal / sourceImage.Width + 1));
                 }
@@ -37,7 +37,7 @@ namespace Lab1
 
         class ToGrayScale : Filters
         {
-            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+            protected override Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
                 Color originalColor = sourceImage.GetPixel(x, y);
                 byte grayValue = (byte)(0.2989f * originalColor.R
@@ -47,9 +47,9 @@ namespace Lab1
             }
         }
 
-        class Binarization : Filters
+        class BinarizationFilter : Filters
         {
-            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+            protected override Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
                 Color originalColor = sourceImage.GetPixel(x, y);
 
@@ -60,9 +60,9 @@ namespace Lab1
             }
         }
 
-        class Brightness : Filters
+        class BrightnessFilter : Filters
         {
-            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+            protected override Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
                 Color originalColor = sourceImage.GetPixel(x, y);
                 int red = (int)(originalColor.R + It.slider);
@@ -77,9 +77,9 @@ namespace Lab1
             }
         }
 
-        class Sepia : Filters
+        class SepiaFilter : Filters
         {
-            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+            protected override Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
                 Color pixelColor = sourceImage.GetPixel(x, y);
                 int r = pixelColor.R;
@@ -107,7 +107,7 @@ namespace Lab1
                 rand = new Random();
             }
 
-            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+            protected override Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
                 int xAxis = x + rand.Next(9) - 4;
                 int yAxis = y + rand.Next(9) - 4;
@@ -118,9 +118,9 @@ namespace Lab1
             }
         }
 
-        class MoveImageFilterX : Filters
+        class MoveImageXFilter : Filters
         {
-            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+            protected override Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
                 int tx = x - It.slider;
                 if (tx < 0 || tx >= sourceImage.Width)
@@ -129,9 +129,9 @@ namespace Lab1
             }
         }
 
-        class MoveImageFilterY : Filters
+        class MoveImageYFilter : Filters
         {
-            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+            protected override Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
                 int ty = y - It.slider;
                 if (ty < 0 || ty >= sourceImage.Height)
@@ -146,7 +146,7 @@ namespace Lab1
             static private readonly int y0 = It.pictureBox1.Image.Height / 2;
             static private readonly float μ = (float)Math.PI * It.slider / 180.0f;
 
-            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+            protected override Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
                 int tx = (int)((x - x0) * Math.Cos(μ) - (y - y0) * Math.Sin(μ) + x0);
                 int ty = (int)((x - x0) * Math.Sin(μ) + (y - y0) * Math.Cos(μ) + y0);
@@ -159,7 +159,7 @@ namespace Lab1
 
         class WaveXImageFilter : Filters
         {
-            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+            protected override Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
                 int tx = (int)(x + 20 * Math.Sin(2 * Math.PI * y / 60));
 
@@ -171,7 +171,7 @@ namespace Lab1
 
         class WaveYImageFilter : Filters
         {
-            protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+            protected override Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
             {
                 int ty = (int)(y + 20 * Math.Sin(2 * Math.PI * x / 60));
 

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Lab1
@@ -15,20 +13,21 @@ namespace Lab1
 
         public static Form1 It;
 
-        private struct ComboItem
+        class ComboMenuItem : ToolStripMenuItem
         {
-            public string Name { get; private set; }
+            public string Naming { get; private set; }
             public Action Action { get; private set; }
             public (int, int)? Minmax { get; private set; }
 
-            public ComboItem(string name, Action action)
+            public ComboMenuItem(string name, Action action)
             {
                 Action = action; Name = name; Minmax = null;
+                base.Text = Name;
             }
-
-            public ComboItem(string name, Action action, (int, int) minmax)
+            public ComboMenuItem(string name, Action action, (int, int) minmax)
             {
                 Action = action; Name = name; Minmax = minmax;
+                base.Text = Name;
             }
         }
 
@@ -41,32 +40,36 @@ namespace Lab1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            var items = new List<ComboItem>
+            // Точечные фильтры
+            ComboMenuItem[] spotMenuItems = new ComboMenuItem[]
             {
-                new ComboItem("Серый",          () => ConvertToGrayScale()),
-                new ComboItem("Бинаризация",    () => Binarize(),            (   0, 255)),
-                new ComboItem("Яркость",        () => AdjustBrightness(),    (-255, 255)),
-                new ComboItem("Сепия",          () => ApplySepiaFilter()),
-                new ComboItem("Стекло",         () => Glass()),
-                new ComboItem("Размытие",       () => Blur()),
-                new ComboItem("Размытие Гаусс", () => GaussBlur()),
-                new ComboItem("Собель X",       () => SobelX()),
-                new ComboItem("Собель Y",       () => SobelY()),
-                new ComboItem("Резкость",       () => Sharpness()),
-                new ComboItem("Перенос X",      () => MoveImageX(),          (0, 0)),
-                new ComboItem("Перенос Y",      () => MoveImageY(),          (0, 0)),
-                new ComboItem("Вращение",       () => RotateImage(),         (-180, 180)),
-                new ComboItem("Волны X",        () => WaveXImage()),
-                new ComboItem("Волны Y",        () => WaveYImage()),
-
+                new ComboMenuItem("Серый",          () => ConvertToGrayScale()),
+                new ComboMenuItem("Бинаризация",    () => Binarize(),            (   0, 255)),
+                new ComboMenuItem("Яркость",        () => AdjustBrightness(),    (-255, 255)),
+                new ComboMenuItem("Сепия",          () => ApplySepiaFilter()),
+                new ComboMenuItem("Стекло",         () => Glass()),
+                new ComboMenuItem("Перенос X",      () => MoveImageX(),          (0, 0)),
+                new ComboMenuItem("Перенос Y",      () => MoveImageY(),          (0, 0)),
+                new ComboMenuItem("Вращение",       () => RotateImage(),         (-180, 180)),
+                new ComboMenuItem("Волны X",        () => WaveXImage()),
+                new ComboMenuItem("Волны Y",        () => WaveYImage()),
             };
 
-            comboBox1.DisplayMember = "Name";
-            comboBox1.ValueMember = "Action";
-            comboBox1.DataSource = items;
+            // Матричные фильтры
+            ComboMenuItem[] matrixMenuItems = new ComboMenuItem[]
+            {
+                new ComboMenuItem("Размытие",       () => Blur()),
+                new ComboMenuItem("Размытие Гаусс", () => GaussBlur()),
+                new ComboMenuItem("Собель X",       () => SobelX()),
+                new ComboMenuItem("Собель Y",       () => SobelY()),
+                new ComboMenuItem("Резкость",       () => Sharpness()),
+            };
 
             EnableButtons(false);
             loadButton.Enabled = true;
+
+            this.точечныеToolStripMenuItem.DropDownItems.AddRange(spotMenuItems);
+            this.матричныеToolStripMenuItem1.DropDownItems.AddRange(matrixMenuItems);
         }
 
         private void LoadImageButton_Click(object sender, EventArgs e)
@@ -120,35 +123,6 @@ namespace Lab1
             pictureBox1.Image = originalImage;
         }
 
-        private void ComboBoxChange(object sender, EventArgs e)
-        {
-            var item = (ComboItem)comboBox1.SelectedItem;
-            if (item.Minmax != null && pictureBox1.Image != null)
-            {
-                thresholdSlider.Enabled = true;
-                if (item.Name == "Перенос X" )
-                {
-                    thresholdSlider.Minimum = -pictureBox1.Image.Width;
-                    thresholdSlider.Maximum = pictureBox1.Image.Width;
-                }
-                else if (item.Name == "Перенос Y")
-                {
-                    thresholdSlider.Minimum = -pictureBox1.Image.Height;
-                    thresholdSlider.Maximum = pictureBox1.Image.Height;
-                }
-                else
-                {
-                    thresholdSlider.Minimum = item.Minmax.Value.Item1;
-                    thresholdSlider.Maximum = item.Minmax.Value.Item2;
-                }
-                SliderChange(sender, e);
-            }
-            else
-            {
-                thresholdSlider.Enabled = false;
-            }
-        }
-
         private void SliderChange(object sender, EventArgs e)
         {
             textBox3.Text = thresholdSlider.Value.ToString();
@@ -157,15 +131,16 @@ namespace Lab1
 
 
         private delegate void Action();
+        ComboMenuItem currentFilter;
 
         private void OkButton_Click(object sender, EventArgs e)
         {
             if (pictureBox1.Image == null)
                 return;
             EnableButtons(false);
-            Action handler = (Action)comboBox1.SelectedValue;
+            Action handler = currentFilter.Action;
             handler();
-            //var task = new Task(() => handler());
+            //var task = new Task(() => actionHandler());
             //task.Start();
         }
 
@@ -174,15 +149,50 @@ namespace Lab1
             loadButton.Enabled = state;
             button5.Enabled = state;
             button7.Enabled = state;
-            comboBox1.Enabled = state;
             textBox3.Enabled = state;
             thresholdSlider.Enabled = state;
             OKbutton.Enabled = state;
-            ComboBoxChange(null, null);
+            menuStrip1.Enabled = state;
         }
+
         public static int Clamp(int value, int min, int max)
         {
             return (value < min) ? min : (value > max) ? max : value;
+        }
+
+        private void ToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            currentFilter = (ComboMenuItem)e.ClickedItem;
+            this.фильтрыToolStripMenuItem.Text = e.ClickedItem.ToString();
+            ToolStripMenuChange();
+        }
+
+        private void ToolStripMenuChange()
+        {
+            if (currentFilter.Minmax != null && pictureBox1.Image != null)
+            {
+                thresholdSlider.Enabled = true;
+                if (currentFilter.Name == "Перенос X")
+                {
+                    thresholdSlider.Minimum = -pictureBox1.Image.Width;
+                    thresholdSlider.Maximum = pictureBox1.Image.Width;
+                }
+                else if (currentFilter.Name == "Перенос Y")
+                {
+                    thresholdSlider.Minimum = -pictureBox1.Image.Height;
+                    thresholdSlider.Maximum = pictureBox1.Image.Height;
+                }
+                else
+                {
+                    thresholdSlider.Minimum = currentFilter.Minmax.Value.Item1;
+                    thresholdSlider.Maximum = currentFilter.Minmax.Value.Item2;
+                }
+                SliderChange(null, null);
+            }
+            else
+            {
+                thresholdSlider.Enabled = false;
+            }
         }
     }
 }

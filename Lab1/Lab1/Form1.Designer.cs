@@ -1,4 +1,6 @@
-﻿namespace Lab1
+﻿using System;
+
+namespace Lab1
 {
     partial class Form1
     {
@@ -32,13 +34,17 @@
             this.loadButton = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.thresholdSlider = new System.Windows.Forms.TrackBar();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.OKbutton = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.button7 = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.фильтрыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.точечныеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.матричныеToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.thresholdSlider)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -54,12 +60,12 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
-            // button1
+            // loadButton
             // 
             this.loadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.loadButton.Location = new System.Drawing.Point(16, 496);
             this.loadButton.Margin = new System.Windows.Forms.Padding(4);
-            this.loadButton.Name = "button1";
+            this.loadButton.Name = "loadButton";
             this.loadButton.Size = new System.Drawing.Size(121, 43);
             this.loadButton.TabIndex = 2;
             this.loadButton.Text = "Загрузить";
@@ -90,17 +96,6 @@
             this.thresholdSlider.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.thresholdSlider.Value = 128;
             this.thresholdSlider.ValueChanged += new System.EventHandler(this.SliderChange);
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.Location = new System.Drawing.Point(457, 506);
-            this.comboBox1.MaxDropDownItems = 99;
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(182, 24);
-            this.comboBox1.TabIndex = 13;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBoxChange);
             // 
             // OKbutton
             // 
@@ -150,6 +145,44 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.RestoreButton_Click);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.фильтрыToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(455, 496);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(188, 44);
+            this.menuStrip1.TabIndex = 18;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // фильтрыToolStripMenuItem
+            // 
+            this.фильтрыToolStripMenuItem.AutoSize = false;
+            this.фильтрыToolStripMenuItem.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.фильтрыToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.точечныеToolStripMenuItem,
+            this.матричныеToolStripMenuItem1});
+            this.фильтрыToolStripMenuItem.Name = "фильтрыToolStripMenuItem";
+            this.фильтрыToolStripMenuItem.Size = new System.Drawing.Size(180, 40);
+            this.фильтрыToolStripMenuItem.Text = "Фильтры";
+            // 
+            // точечныеToolStripMenuItem
+            // 
+            this.точечныеToolStripMenuItem.Name = "точечныеToolStripMenuItem";
+            this.точечныеToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.точечныеToolStripMenuItem.Text = "Точечные";
+            this.точечныеToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.ToolStripMenuItem_DropDownItemClicked);
+            // 
+            // матричныеToolStripMenuItem1
+            // 
+            this.матричныеToolStripMenuItem1.Name = "матричныеToolStripMenuItem1";
+            this.матричныеToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
+            this.матричныеToolStripMenuItem1.Text = "Матричные";
+            this.матричныеToolStripMenuItem1.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.ToolStripMenuItem_DropDownItemClicked);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -159,11 +192,11 @@
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.OKbutton);
-            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.thresholdSlider);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.loadButton);
             this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.menuStrip1);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(1060, 400);
             this.Name = "Form1";
@@ -171,6 +204,8 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.thresholdSlider)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -182,11 +217,14 @@
         private System.Windows.Forms.Button loadButton;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.TrackBar thresholdSlider;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button OKbutton;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem фильтрыToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem точечныеToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem матричныеToolStripMenuItem1;
     }
 }
 

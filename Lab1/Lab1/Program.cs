@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Lab1
@@ -16,7 +13,11 @@ namespace Lab1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Form F = new Form1();
+            if(DateTime.Now.Hour == 9)
+                F.Text = "    '-[  UwU  ]-'";
+            Application.Run(F);
+
         }
     }
 }

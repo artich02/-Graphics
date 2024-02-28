@@ -12,6 +12,7 @@ namespace Lab1
 
             public void ProcessImage(Bitmap sourceImage)
             {
+                It.thresholdSlider.Invoke((Action)(() => { It.thresholdSlider.Enabled = false; }));
                 Bitmap resultImg = new Bitmap(sourceImage.Width, sourceImage.Height);
                 for (int i = 0; i < sourceImage.Width; i++)
                 {

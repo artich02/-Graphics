@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Lab1
@@ -139,9 +140,9 @@ namespace Lab1
                 return;
             EnableButtons(false);
             Action handler = currentFilter.Action;
-            handler();
-            //var task = new Task(() => actionHandler());
-            //task.Start();
+            //handler();
+            var task = new Task(() => handler());
+            task.Start();
         }
 
         private void EnableButtons(bool state)
@@ -153,6 +154,7 @@ namespace Lab1
             thresholdSlider.Enabled = state;
             OKbutton.Enabled = state;
             menuStrip1.Enabled = state;
+            ToolStripMenuChange();
         }
 
         public static int Clamp(int value, int min, int max)
@@ -169,7 +171,7 @@ namespace Lab1
 
         private void ToolStripMenuChange()
         {
-            if (currentFilter.Minmax != null && pictureBox1.Image != null)
+            if (currentFilter != null && currentFilter.Minmax != null && pictureBox1.Image != null)
             {
                 thresholdSlider.Enabled = true;
                 if (currentFilter.Name == "Перенос X")

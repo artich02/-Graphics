@@ -45,6 +45,7 @@ namespace Lab1
             this.комбинированныеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.цветокоррекцияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.матморфологияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.геометрическиеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.thresholdSlider)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -159,9 +160,9 @@ namespace Lab1
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.фильтрыToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(467, 496);
+            this.menuStrip1.Location = new System.Drawing.Point(317, 496);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(198, 44);
+            this.menuStrip1.Size = new System.Drawing.Size(348, 44);
             this.menuStrip1.TabIndex = 18;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -171,6 +172,7 @@ namespace Lab1
             this.фильтрыToolStripMenuItem.BackColor = System.Drawing.SystemColors.ControlLight;
             this.фильтрыToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.точечныеToolStripMenuItem,
+            this.геометрическиеToolStripMenuItem,
             this.матричныеToolStripMenuItem1,
             this.комбинированныеToolStripMenuItem,
             this.цветокоррекцияToolStripMenuItem,
@@ -213,6 +215,13 @@ namespace Lab1
             this.матморфологияToolStripMenuItem.Size = new System.Drawing.Size(228, 26);
             this.матморфологияToolStripMenuItem.Text = "Матморфология";
             this.матморфологияToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.ToolStripMenuItem_DropDownItemClicked);
+            // 
+            // геометрическиеToolStripMenuItem
+            // 
+            this.геометрическиеToolStripMenuItem.Name = "геометрическиеToolStripMenuItem";
+            this.геометрическиеToolStripMenuItem.Size = new System.Drawing.Size(228, 26);
+            this.геометрическиеToolStripMenuItem.Text = "Геометрические";
+            this.геометрическиеToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.ToolStripMenuItem_DropDownItemClicked);
             // 
             // Form1
             // 
@@ -261,6 +270,7 @@ namespace Lab1
         private System.Windows.Forms.ToolStripMenuItem комбинированныеToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem цветокоррекцияToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem матморфологияToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem геометрическиеToolStripMenuItem;
     }
 }
 

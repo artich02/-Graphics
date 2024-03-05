@@ -203,61 +203,7 @@ namespace Lab1
             It.pictureBox1.Image = img;
             It.progressBar1.Invoke((Action)(() => { It.progressBar1.Value = 0; It.EnableButtons(true); }));
         }
-        /*
-        /// <summary>
-        /// .....................................................................
-        /// </summary>
 
-        public void MathmorphTopHat()
-        {
-            // Use existing function for opening operation
-            Filters filter = new DilationFilter();
-            Bitmap openingResult = filter.ProcessImage(pictureBox1.Image);
 
-            // Calculate Top Hat
-            Bitmap topHat = new Bitmap(imgWidth, imgHeight);
-            for (int x = 0; x < Image.Width; x++)
-            {
-                for (int y = 0; y < Image.Height; y++)
-                {
-                    Color originalPixel = Image.GetPixel(x, y);
-                    Color openingPixel = openingResult.GetPixel(x, y);
-                    int r = Math.Max(0, originalPixel.R - openingPixel.R);
-                    int g = Math.Max(0, originalPixel.G - openingPixel.G);
-                    int b = Math.Max(0, originalPixel.B - openingPixel.B);
-                    topHat.SetPixel(x, y, Color.FromArgb(r, g, b));
-                }
-            }
-
-            // Update UI (similar to existing functions)
-            pictureBox1.Image = topHat;
-            progressBar1.Invoke((Action)(() => { progressBar1.Value = 0; EnableButtons(true); }));
-        }
-        
-        public void MathmorphBlackHat()
-        {
-            // Create structuring element (similar to Top Hat)
-            int kernelSize = 5;
-            int[,] kernel = new int[kernelSize, kernelSize];
-
-            // Perform closing operation
-            Filters filter = new ErosionFilter();
-            Bitmap closingResult = filter.ProcessImage(Image);
-
-            Bitmap blackHat = new Bitmap(imgWidth, imgHeight);
-            for (int x = 0; x < Image.Width; x++)
-            {
-                for (int y = 0; y < Image.Height; y++)
-                {
-                    Color originalPixel = Image.GetPixel(x, y);
-                    Color closingPixel = closingResult.GetPixel(x, y);
-                    int r = Math.Max(0, originalPixel.R - closingPixel.R);
-                    int g = Math.Max(0, originalPixel.G - closingPixel.G);
-                    int b = Math.Max(0, originalPixel.B - closingPixel.B);
-                    blackHat.SetPixel(x, y, Color.FromArgb(r, g, b));
-                }
-            }
-        }
-        */
     }
 }

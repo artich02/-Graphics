@@ -280,6 +280,44 @@ namespace Lab1
             filter.ProcessImage(pictureBox1.Image);
         }
 
+        class SobelMergeFilter : Filters
+        {
+            Bitmap imgL, imgR;
+
+            public SobelMergeFilter(Bitmap img1, Bitmap img2)
+            {
+                imgL = img1;
+                imgR = img2;
+            }
+
+            protected unsafe override void CalculateNewPixelColor(byte* ptrIn, byte* ptrOut, ref int stride, ref int x, ref int y)
+            {
+                Color L = imgL.GetPixel(x, y);
+                Color R = imgR.GetPixel(x, y);
+
+                byte col = (byte)(Math.Sqrt((int)L.R * (int)L.R + (int)R.R * (int)R.R));
+
+                ptrOut[(x * 3) + y * stride + 2] = (byte)Clamp(col, 0, 255);
+                ptrOut[(x * 3) + y * stride + 1] = (byte)Clamp(col, 0, 255);
+                ptrOut[(x * 3) + y * stride] = (byte)Clamp(col, 0, 255);
+                /*
+                ptrOut[(x * 3) + y * stride + 2] = (byte)Clamp(L.R - R.R, 0, 255);
+                ptrOut[(x * 3) + y * stride + 1] = (byte)Clamp(L.G - R.G, 0, 255);
+                ptrOut[(x * 3) + y * stride] = (byte)Clamp(L.B - R.B, 0, 255);*/
+            }
+        }
+        public void Sobel()
+        {
+            Filters filter = new SobelFilter(false);
+            var imgX = filter.PartialProcessImage(pictureBox1.Image, progressbarMaxVal / 3);
+            filter = new SobelFilter(true);
+            var imgY = filter.PartialProcessImage(pictureBox1.Image, progressbarMaxVal / 3 * 2);
+            filter = new SobelMergeFilter(imgX, imgY);
+            var img = filter.PartialProcessImage(pictureBox1.Image, progressbarMaxVal);
+            It.pictureBox1.Image = img;
+            It.progressBar1.Invoke((Action)(() => { It.progressBar1.Value = 0; It.EnableButtons(true); }));
+        }
+
         // Фильтр резкости
         public void Sharpness()
         {

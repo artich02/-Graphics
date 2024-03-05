@@ -59,6 +59,11 @@ namespace Lab1
                 new ComboMenuItem("Бинаризация",    () => Binarize(),            (   0, 255)),
                 new ComboMenuItem("Яркость",        () => AdjustBrightness(),    (-255, 255)),
                 new ComboMenuItem("Сепия",          () => ApplySepiaFilter()),
+            };
+
+            // Точечные фильтры
+            ComboMenuItem[] geomMenuItems = new ComboMenuItem[]
+            {
                 new ComboMenuItem("Стекло",         () => Glass()),
                 new ComboMenuItem("Перенос X",      () => MoveImageX(),          (0, 0)),
                 new ComboMenuItem("Перенос Y",      () => MoveImageY(),          (0, 0)),
@@ -74,6 +79,7 @@ namespace Lab1
                 new ComboMenuItem("Размытие Гаусс", () => GaussBlur()),
                 new ComboMenuItem("Собель X",       () => SobelX()),
                 new ComboMenuItem("Собель Y",       () => SobelY()),
+                new ComboMenuItem("Собель",         () => Sobel()),
                 new ComboMenuItem("Резкость",       () => Sharpness()),
                 new ComboMenuItem("Размытие в движении", () => MotionBlur()),
                 new ComboMenuItem("Медианный",      () => Median()),
@@ -111,6 +117,7 @@ namespace Lab1
             loadButton.Enabled = true;
 
             this.точечныеToolStripMenuItem.DropDownItems.AddRange(spotMenuItems);
+            this.геометрическиеToolStripMenuItem.DropDownItems.AddRange(geomMenuItems);
             this.матричныеToolStripMenuItem1.DropDownItems.AddRange(matrixMenuItems);
             this.комбинированныеToolStripMenuItem.DropDownItems.AddRange(combinedMenuItems);
             this.цветокоррекцияToolStripMenuItem.DropDownItems.AddRange(colCorrMenuItems);

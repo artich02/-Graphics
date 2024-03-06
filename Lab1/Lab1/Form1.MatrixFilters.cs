@@ -290,6 +290,7 @@ namespace Lab1
                 imgR = img2;
             }
 
+
             protected unsafe override void CalculateNewPixelColor(byte* ptrIn, byte* ptrOut, ref int stride, ref int x, ref int y)
             {
                 Color L = imgL.GetPixel(x, y);
@@ -297,13 +298,9 @@ namespace Lab1
 
                 byte col = (byte)(Math.Sqrt((int)L.R * (int)L.R + (int)R.R * (int)R.R));
 
-                ptrOut[(x * 3) + y * stride + 2] = (byte)Clamp(col, 0, 255);
-                ptrOut[(x * 3) + y * stride + 1] = (byte)Clamp(col, 0, 255);
-                ptrOut[(x * 3) + y * stride] = (byte)Clamp(col, 0, 255);
-                /*
-                ptrOut[(x * 3) + y * stride + 2] = (byte)Clamp(L.R - R.R, 0, 255);
-                ptrOut[(x * 3) + y * stride + 1] = (byte)Clamp(L.G - R.G, 0, 255);
-                ptrOut[(x * 3) + y * stride] = (byte)Clamp(L.B - R.B, 0, 255);*/
+                ptrOut[(x * 3) + y * stride + 2] = col;
+                ptrOut[(x * 3) + y * stride + 1] = col;
+                ptrOut[(x * 3) + y * stride] = col;
             }
         }
         public void Sobel()

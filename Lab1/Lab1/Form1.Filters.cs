@@ -347,5 +347,12 @@ namespace Lab1
                 ptrOut[x * 3 + y * stride] = (byte)blue;
             }
         }
+
+        public void CorrectionWithReferenceColor()
+        {
+            string text = It.Text;
+            It.Text = "PIPETTE";
+            pipette = true;
+        }
     }
 }

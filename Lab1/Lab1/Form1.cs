@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Lab1
@@ -99,6 +98,7 @@ namespace Lab1
                 new ComboMenuItem("Лин. раст-е гистограммы", () => LinearHistogramStretch()),
                 new ComboMenuItem("Серый мир",               () => GrayWorld()),
                 new ComboMenuItem("Идеальный отражатель",    () => PerfectReflector()),
+                new ComboMenuItem("Корр. с опорным цветом",  () => CorrectionWithReferenceColor()),
             };
 
             // Матморфология
@@ -196,9 +196,9 @@ namespace Lab1
                 return;
             EnableButtons(false);
             Action handler = currentFilter.Action;
-            //handler();
-            var task = new Task(() => handler());
-            task.Start();
+            handler();
+            //var task = new Task(() => handler());
+            //task.Start();
         }
 
         private void EnableButtons(bool state)
@@ -254,6 +254,8 @@ namespace Lab1
             }
         }
 
+        private bool pipette = false;
+
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Middle && pictureBox1.Image != null && OKbutton.Enabled)
@@ -287,6 +289,50 @@ namespace Lab1
                     form.ShowDialog();
                 }
             }
+            else if (e.Button == MouseButtons.Left && pictureBox1.Image != null && pipette)
+            {
+                var rato = e as MouseEventArgs;
+                Bitmap b = ((Bitmap)pictureBox1.Image);
+
+                Size displayedSize = GetDisplayedImageSize(pictureBox1);
+                float imgRatio = (float)b.Width / displayedSize.Width;
+
+                Size indent = new Size(
+                    (pictureBox1.ClientSize.Width - displayedSize.Width) / 2,
+                    (pictureBox1.ClientSize.Height - displayedSize.Height) / 2);
+
+                int x = (int)((rato.X - indent.Width) * imgRatio);
+                int y = (int)((rato.Y - indent.Height) * imgRatio);
+
+                if (x < 0 || y < 0 || x >= b.Width || y >= b.Height)
+                    return;
+
+                Color pipettePixelColor = b.GetPixel(x, y);
+
+                pipette = false;
+                SetResultColor(pipettePixelColor);
+            }
+        }
+
+        private Size GetDisplayedImageSize(PictureBox pictureBox)
+        {
+            Size containerSize = pictureBox.ClientSize;
+            float containerAspectRatio = (float)containerSize.Height / (float)containerSize.Width;
+            Size originalImageSize = pictureBox.Image.Size;
+            float imageAspectRatio = (float)originalImageSize.Height / (float)originalImageSize.Width;
+
+            Size result = new Size();
+            if (containerAspectRatio > imageAspectRatio)
+            {
+                result.Width = containerSize.Width;
+                result.Height = (int)(imageAspectRatio * (float)containerSize.Width);
+            }
+            else
+            {
+                result.Height = containerSize.Height;
+                result.Width = (int)((1.0f / imageAspectRatio) * (float)containerSize.Height);
+            }
+            return result;
         }
 
         private void ChangeStructingElement(object sender, EventArgs e)
@@ -314,7 +360,7 @@ namespace Lab1
             }
 
             form.BackColor = Color.White;
-            form.StartPosition = FormStartPosition.CenterScreen;
+            form.StartPosition = FormStartPosition.CenterParent;
             form.Width = 438;
             form.Height = 180;
             form.FormBorderStyle = FormBorderStyle.FixedToolWindow;
